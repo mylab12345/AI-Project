@@ -1,21 +1,47 @@
+/* ==========================================================================
+   AI Campus Opportunity Agent — stylesheet (styles.css)
+   Order: variables -> base -> nav -> buttons -> hero -> sections ->
+          demo dashboard -> footer -> toast -> responsive media queries.
+   Every class below matches a class used in index.html.
+   ========================================================================== */
+
+/* ---------- 1. DESIGN TOKENS (CSS variables used everywhere) ---------- */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#070b16;--bg2:#0b1122;--card:#111a30;--card2:#0e1530;--line:#1f2a4d;--txt:#e8edf7;--mut:#9aa7c4;--vio:#8b5cf6;--vio2:#6d28d9;--pink:#ec4899;--blue:#38bdf8;--green:#22c55e;--red:#ef4444;--amber:#f59e0b}
+
+/* ---------- 2. BASE ---------- */
+html{scroll-behavior:smooth} /* makes every nav "tab" glide instead of jumping */
 body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+/* When a nav tab scrolls to a section, stop 76px early so the sticky navbar
+   never covers the section title. */
+section[id],header[id]{scroll-margin-top:76px}
 .container{max-width:1200px;margin:0 auto;padding:0 22px}
 h1,h2,h3,h4{font-family:Sora,Inter,sans-serif}
 .grad{background:linear-gradient(90deg,var(--vio),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
-/* NAV */
-.nav{position:sticky;top:0;z-index:50;background:rgba(7,11,22,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--vio);outline-offset:2px} /* keyboard accessibility */
+
+/* ---------- 3. NAV (sticky top bar = the site's "tabs") ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(7,11,22,.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .nav-inner{max-width:1200px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:22px}
 .brand{font-weight:800;font-size:19px;text-decoration:none;color:#fff}.brand span{color:var(--vio)}.brand-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--vio),var(--pink));margin-right:8px}
 .nav-links{display:flex;gap:16px;margin-left:auto}.nav-links a{color:var(--mut);text-decoration:none;font-size:14px}.nav-links a:hover{color:#fff}
-/* BUTTONS */
+.nav-links a.active{color:#fff;text-shadow:0 0 12px rgba(139,92,246,.8)} /* current tab, set by scrollspy in app.js */
+
+/* Hamburger button — hidden on desktop, shown by the media query at the bottom */
+.nav-toggle{display:none;flex-direction:column;justify-content:center;gap:4px;width:40px;height:36px;margin-left:auto;background:none;border:1px solid var(--line);border-radius:9px;cursor:pointer;padding:0 9px}
+.nav-toggle span{display:block;height:2px;width:100%;background:var(--txt);border-radius:2px;transition:.2s}
+.nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ---------- 4. BUTTONS ---------- */
 .btn{display:inline-block;padding:12px 22px;border-radius:12px;font-weight:700;text-decoration:none;border:1px solid transparent;cursor:pointer;font-size:15px}
 .btn-primary{background:linear-gradient(135deg,var(--vio2),var(--vio),var(--pink));color:#fff;box-shadow:0 8px 24px rgba(139,92,246,.35)}
 .btn-primary:hover{filter:brightness(1.1)}
 .btn-ghost{border-color:var(--line);color:var(--txt);background:rgba(255,255,255,.04)}
 .btn-sm{padding:8px 14px;font-size:13px;border-radius:10px}
-/* HERO */
+
+/* ---------- 5. HERO ---------- */
 .hero{position:relative;overflow:hidden;padding:56px 0 70px;border-bottom:1px solid var(--line)}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(600px 300px at 20% 10%,rgba(139,92,246,.25),transparent),radial-gradient(500px 300px at 80% 20%,rgba(236,72,153,.18),transparent),radial-gradient(700px 400px at 50% 100%,rgba(56,189,248,.12),transparent)}
 .hero-grid{position:relative;display:grid;grid-template-columns:1fr 1.1fr;gap:36px;align-items:start}
@@ -27,7 +53,7 @@ h1,h2,h3,h4{font-family:Sora,Inter,sans-serif}
 .what i{color:var(--vio);font-style:normal;font-weight:800;margin-right:8px}
 .hero-cta{display:flex;gap:12px;margin:20px 0;flex-wrap:wrap}
 .college-strip{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--mut);display:grid;gap:2px}.college-strip strong{color:#fff;font-size:13px}
-/* hero right mockups */
+/* hero right mockups (laptop / notification / phone / to-do note) */
 .hero-right{position:relative;min-height:560px}
 .laptop{background:#0d1328;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 30px 60px rgba(0,0,0,.5)}
 .laptop-screen{background:#101a36;border-radius:10px;padding:14px}
@@ -45,7 +71,8 @@ h1,h2,h3,h4{font-family:Sora,Inter,sans-serif}
 .todo-note{position:absolute;left:10px;bottom:-10px;background:#f5f1e6;color:#333;border-radius:12px;padding:14px;width:230px;font-size:13px;transform:rotate(-3deg);box-shadow:0 16px 40px rgba(0,0,0,.5)}
 .todo-note b{font-family:cursive;font-size:18px;display:block;margin-bottom:6px}.todo-note label{display:block;margin:4px 0}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-/* sections */
+
+/* ---------- 6. GENERIC SECTIONS ---------- */
 section{padding:60px 0}
 .alt{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .sec-title{text-align:center;color:var(--vio);letter-spacing:2px;font-size:22px;margin-bottom:6px}
@@ -74,7 +101,8 @@ section{padding:60px 0}
 .arrow{align-self:center;color:var(--vio);font-size:24px;font-weight:800}
 .pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
 .pipeline span{background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.25);border-radius:12px;padding:12px;font-size:13px;text-align:center}.pipeline small{display:block;color:var(--mut);font-size:11px;margin-top:4px}
-/* demo */
+
+/* ---------- 7. LIVE DEMO DASHBOARD ---------- */
 .demo-grid{display:grid;grid-template-columns:.9fr 1.2fr .9fr;gap:16px}
 .card label{display:block;font-size:13px;color:var(--mut);margin:12px 0}
 .card input,.card select{width:100%;margin-top:6px;background:#0b1230;border:1px solid var(--line);color:#fff;border-radius:10px;padding:10px;font-size:14px}
@@ -108,9 +136,45 @@ section{padding:60px 0}
 /* future */
 .future-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .future{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}.future b{display:block;margin-bottom:6px}.future span{color:var(--mut);font-size:13px}
-/* footer */
+
+/* ---------- 8. FOOTER + TOAST ---------- */
 footer{border-top:1px solid var(--line);padding:26px 0;background:#05080f}
 .foot{display:flex;justify-content:space-between;gap:16px;align-items:center}.foot span{display:block;color:var(--mut);font-size:12px}.foot .right{text-align:right;display:grid;gap:8px;justify-items:end}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#fff;color:#111;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.3s;z-index:99;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#fff;color:#111;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:.3s;z-index:99;box-shadow:0 16px 40px rgba(0,0,0,.5);max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media(max-width:1000px){.hero-grid,.split-grid,.two-col,.demo-grid{grid-template-columns:1fr}.feat-row,.innov-grid{grid-template-columns:repeat(2,1fr)}.tech-grid,.future-grid,.pipeline{grid-template-columns:1fr 1fr}.steps{flex-direction:column}.arrow{transform:rotate(90deg)}.hero-right{min-height:640px}.nav-links{display:none}.hero h1{font-size:42px}.toast-card{left:0}}
+
+/* ---------- 9. RESPONSIVE ---------- */
+/* Tablets / small laptops: nav becomes a hamburger dropdown and the hero
+   mockups stack vertically instead of overlapping. */
+@media(max-width:1000px){
+  .nav-toggle{display:flex}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;margin-left:0;flex-direction:column;gap:2px;padding:12px 22px 16px;background:rgba(7,11,22,.97);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:10px 10px;border-radius:8px;font-size:15px}
+  .nav-links a:hover{background:rgba(255,255,255,.05)}
+  .hero-grid,.split-grid,.two-col,.demo-grid{grid-template-columns:1fr}
+  .feat-row,.innov-grid{grid-template-columns:repeat(2,1fr)}
+  .tech-grid,.future-grid,.pipeline{grid-template-columns:1fr 1fr}
+  .steps{flex-direction:column}.arrow{transform:rotate(90deg);align-self:center}
+  .hero h1{font-size:42px}
+  /* hero mockups: flow normally (no absolute positioning = no overlap) */
+  .hero-right{min-height:auto;display:grid;gap:16px;justify-items:center}
+  .toast-card{position:static;left:auto;width:auto;max-width:340px;animation:none}
+  .phone{position:static;width:100%;max-width:340px}
+  .todo-note{position:static;width:100%;max-width:300px;transform:rotate(-1.5deg)}
+}
+/* Phones: tighten type & grids further */
+@media(max-width:560px){
+  .hero{padding:40px 0 56px}
+  .hero h1{font-size:34px}
+  .feat-row{grid-template-columns:repeat(2,1fr)}
+  .innov-grid,.tech-grid,.future-grid,.pipeline,.obj-grid{grid-template-columns:1fr}
+  .dash-stats{grid-template-columns:repeat(2,1fr)}
+  .card{padding:20px}
+  .foot{flex-direction:column;text-align:center}.foot .right{justify-items:center;text-align:center}
+}
+/* Respect users who turn off animations in their OS settings */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition:none!important}
+}
