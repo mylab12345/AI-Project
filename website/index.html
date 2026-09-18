@@ -3,18 +3,32 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="AI Campus Opportunity Agent — a Community Engineering Project (BIT42304) by IT Dept, TGPCET Nagpur. One AI agent that finds internships, hackathons, scholarships and contests for students." />
 <title>AI Campus Opportunity Agent — TGPCET | Project 3</title>
+<!-- Favicon: inline SVG (no extra file needed, prevents a 404 in the console) -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!-- ======================================================================
+     NAVBAR (sticky)
+     - .brand          : logo text, links back to #top (the hero)
+     - #navLinks       : the 7 "tabs" of the site. Each href="#..." scrolls
+                         to the <section> whose id matches (see sections below).
+                         On phones this turns into a dropdown menu.
+     - #navToggle      : hamburger button, only visible on screens <= 1000px.
+     - "Try Demo"      : quick shortcut to the #demo section.
+     ====================================================================== -->
 <nav class="nav">
   <div class="nav-inner">
     <a class="brand" href="#top"><span class="brand-dot"></span> Campus<span>Agent</span></a>
-    <div class="nav-links">
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
       <a href="#problem">Problem</a>
       <a href="#aim">Aim</a>
       <a href="#features">Features</a>
@@ -27,7 +41,16 @@
   </div>
 </nav>
 
-<!-- HERO — replicates the reference image top section -->
+<!-- ======================================================================
+     HERO (id="top") — replicates the reference image top section.
+     Left column  : project title, "what it does" list, CTA buttons,
+                    college info strip.
+     Right column : pure HTML/CSS mockups of the product (no images used):
+                    .laptop    -> dashboard preview
+                    .toast-card-> floating notification
+                    .phone     -> upcoming deadlines card
+                    .todo-note -> sticky to-do note (decorative checkboxes)
+     ====================================================================== -->
 <header class="hero" id="top">
   <div class="hero-bg"></div>
   <div class="container hero-grid">
@@ -99,7 +122,10 @@
   </div>
 </header>
 
-<!-- PROBLEM vs SOLUTION -->
+<!-- ======================================================================
+     SECTION: PROBLEM vs SOLUTION (nav tab "Problem", id="problem")
+     Two cards side by side: .problem (red ! badge) and .solution (green ✓).
+     ====================================================================== -->
 <section class="split" id="problem">
   <div class="container split-grid">
     <div class="ps-card problem">
@@ -121,7 +147,10 @@
   </div>
 </section>
 
-<!-- KEY FEATURES (image row) -->
+<!-- ======================================================================
+     SECTION: KEY FEATURES (nav tab "Features", id="features")
+     6 feature cards rendered by plain HTML in .feat-row (PPT §06 modules).
+     ====================================================================== -->
 <section id="features">
   <div class="container">
     <h2 class="sec-title">KEY FEATURES</h2>
@@ -137,7 +166,9 @@
   </div>
 </section>
 
-<!-- AIM + OBJECTIVES (PPT slides 2 & 3) -->
+<!-- ======================================================================
+     SECTION: AIM + OBJECTIVES (nav tab "Aim", id="aim") — PPT slides 2 & 3
+     ====================================================================== -->
 <section id="aim" class="alt">
   <div class="container two-col">
     <div class="card">
@@ -165,7 +196,12 @@
   </div>
 </section>
 
-<!-- HOW IT WORKS (image + PPT slide 7 pipeline) -->
+<!-- ======================================================================
+     SECTION: HOW IT WORKS (nav tab "How It Works", id="how") — PPT slide 7
+     .steps    : 4 numbered step cards joined by arrows
+     .pipeline : the technical data-flow (profile -> sources -> processing
+                 -> AI matching -> dashboard)
+     ====================================================================== -->
 <section id="how">
   <div class="container">
     <h2 class="sec-title">HOW IT WORKS</h2>
@@ -188,7 +224,13 @@
   </div>
 </section>
 
-<!-- LIVE DEMO DASHBOARD -->
+<!-- ======================================================================
+     SECTION: LIVE DEMO (nav tab "Live Demo", id="demo")
+     The interactive part of the site — all behaviour lives in app.js.
+     Card 1 (#inSkills, #inInterest, #btnMatch, #reminders) -> profile input
+     Card 2 (.filters buttons, #matchCount, #oppList)       -> results
+     Card 3 (#savedList, #todoInput, #todoAdd, #todoList)   -> saved + to-do
+     ====================================================================== -->
 <section id="demo" class="alt">
   <div class="container">
     <h2 class="sec-title">LIVE DEMO — TRY THE AGENT</h2>
@@ -236,7 +278,9 @@
   </div>
 </section>
 
-<!-- TECH STACK (PPT slide 8) -->
+<!-- ======================================================================
+     SECTION: TECH STACK (nav tab "Tech Stack", id="tech") — PPT slide 8
+     ====================================================================== -->
 <section id="tech">
   <div class="container">
     <h2 class="sec-title">LANGUAGES &amp; TECHNOLOGIES</h2>
@@ -252,7 +296,9 @@
   </div>
 </section>
 
-<!-- WHY IT'S INNOVATIVE -->
+<!-- ======================================================================
+     SECTION: WHY IT'S INNOVATIVE (id="innov", not in nav — extra content)
+     ====================================================================== -->
 <section id="innov" class="alt">
   <div class="container">
     <h2 class="sec-title">WHY IT'S INNOVATIVE</h2>
@@ -267,7 +313,9 @@
   </div>
 </section>
 
-<!-- FUTURE SCOPE -->
+<!-- ======================================================================
+     SECTION: FUTURE SCOPE (nav tab "Future", id="future")
+     ====================================================================== -->
 <section id="future">
   <div class="container">
     <h2 class="sec-title">FUTURE SCOPE</h2>
@@ -289,6 +337,7 @@
   </div>
 </footer>
 
+<!-- #toast: the black pop-up message shown after actions (Save / Add task...) -->
 <div id="toast" class="toast"></div>
 <script src="app.js"></script>
 </body>
