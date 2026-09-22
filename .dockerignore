@@ -1,0 +1,22 @@
+# Keep the Docker build context small.
+# The Dockerfile only copies website/, so nothing else is actually needed.
+.git
+.gitignore
+.github
+**/.DS_Store
+Thumbs.db
+desktop.ini
+
+# Documentation is not part of the image
+*.md
+
+# Never send local secrets into the build context
+.env
+**/.env
+
+# Editors / tooling
+.vscode
+.idea
+node_modules
+**/node_modules
+*.log

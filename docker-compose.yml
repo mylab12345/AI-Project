@@ -1,0 +1,125 @@
+# =============================================================================
+#  AI Campus Opportunity Agent — Docker Compose stack
+#
+#  Services
+#    web               nginx serving the static site (always started)
+#    cloudflared-quick Cloudflare *Quick Tunnel*  — profile "quick"
+#                      random https://<words>.trycloudflare.com URL, no account
+#    cloudflared-named Cloudflare *Named Tunnel*   — profile "named"
+#                      your own domain, needs CLOUDFLARE_TUNNEL_TOKEN in .env
+#
+#  Typical commands (run these in the folder that contains this file):
+#    docker compose up -d --build                       -> local only
+#                                                          http://localhost:8080
+#    docker compose --profile quick up -d --build       -> + temporary public URL
+#    docker compose --profile named up -d --build       -> + your own domain
+#    docker compose ps                                  -> what is running
+#    docker compose logs -f cloudflared-quick           -> find the public URL
+#    docker compose down                                -> stop everything
+#
+#  Full walkthrough: WINDOWS_DOCKER_CLOUDFLARE_GUIDE.md
+# =============================================================================
+
+# Fixed project name, so containers/network are always named the same no matter
+# which folder the project is cloned into.
+name: campus-agent
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # 1. The website (nginx + the three files from website/)
+  # ---------------------------------------------------------------------------
+  web:
+    build:
+      context: .              # build context = repo root (Dockerfile lives here)
+      dockerfile: Dockerfile
+    image: campus-agent-web:local
+    container_name: campus-agent-web
+    restart: unless-stopped
+    ports:
+      # "HOST:CONTAINER". 8080 is the port on your Windows machine.
+      # Change WEB_PORT in .env (or here) if 8080 is already in use.
+      - "${WEB_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -T 3 -O /dev/null http://127.0.0.1/healthz || exit 1"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - webnet
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ---------------------------------------------------------------------------
+  # 2a. Cloudflare Quick Tunnel  (docker compose --profile quick up -d)
+  #     - No Cloudflare account, no domain, no token.
+  #     - Prints a random https://xxxx.trycloudflare.com URL in its logs.
+  #     - The URL changes every time the container is recreated, and quick
+  #       tunnels are meant for testing/demos (200 concurrent request limit).
+  #     - "http://web:80" = the container above, by service name, over the
+  #       internal Docker network. Inside this container "localhost" would
+  #       mean this container itself — that is the classic mistake here.
+  # ---------------------------------------------------------------------------
+  cloudflared-quick:
+    image: cloudflare/cloudflared:latest
+    container_name: campus-agent-tunnel-quick
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --url http://web:80
+    depends_on:
+      web:
+        condition: service_healthy
+    profiles:
+      - quick
+    networks:
+      - webnet
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ---------------------------------------------------------------------------
+  # 2b. Cloudflare Named Tunnel  (docker compose --profile named up -d)
+  #     - Persistent URL on a domain you own and added to Cloudflare.
+  #     - Create the tunnel once in the dashboard (Zero Trust -> Networks ->
+  #       Tunnels -> Create a tunnel -> Cloudflared), then copy the token from
+  #       the Docker "Install connector" command into .env as
+  #       CLOUDFLARE_TUNNEL_TOKEN.
+  #     - In the dashboard, the tunnel's Public Hostname must point to
+  #       service type "HTTP" and URL "web:80" (again: service name, not
+  #       localhost).
+  # ---------------------------------------------------------------------------
+  cloudflared-named:
+    image: cloudflare/cloudflared:latest
+    container_name: campus-agent-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      # Empty default on purpose: compose interpolates every value in this
+      # file, so ":?" (fail if unset) would also break the "quick" profile.
+      TUNNEL_TOKEN: "${CLOUDFLARE_TUNNEL_TOKEN:-}"
+    depends_on:
+      web:
+        condition: service_healthy
+    profiles:
+      - named
+    networks:
+      - webnet
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# -----------------------------------------------------------------------------
+# Internal network: cloudflared talks to nginx by service name ("web:80").
+# Nothing here is exposed to the Internet — cloudflared only makes *outbound*
+# connections to Cloudflare, so no Windows firewall ports need to be opened.
+# -----------------------------------------------------------------------------
+networks:
+  webnet:
+    driver: bridge
